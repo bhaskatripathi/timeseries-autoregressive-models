@@ -142,6 +142,11 @@ accuracy(forecast,h=30)
 checkresiduals(finalmodel) # This will plot the residual graphs
 checkresiduals(remodel_Arima)
 
+#Plot Forecast Errors - check whether forecast errors are normally distributed
+qqnorm(finalmodel$residuals)
+qqline(finalmodel$residuals)
+
+
 #If there are any patterns in the residuals and its not white noise then remodel with different parameters
 tsdisplay(residuals(finalmodel), lag.max=45, main='(2,1,2) Model Residuals')
 remodel_Arima = arima(tsdata2, order = c(5, 1, 5), seasonal = list(order = c(0,0,0), period = 365))
@@ -160,40 +165,4 @@ forecast = forecast(finalmodel,h=30)
 plot(forecast)
 
 
-#Plot Forecast Errors - check whether forecast errors are normally distributed
-qqnorm(finalmodel$residuals)
-qqline(finalmodel$residuals)
 
-
-
-
-================================================================================================
-arimaFit= auto.arima(mydata$Close,approximation=FALSE,stepwise = FALSE)
-summary(arimaFit)
-forecast = forecast(arimaFit,h=30)
-plot(forecast)
-
-# plot residuals
-plot(arimaFit$residuals)
-
-#Check normality - 45 degree line is normal
-qqnorm(arimaFit$residuals)
-qqline(arimaFit$residuals, col="red")
-
-#plot histogram
-plotNormalHistogram(arimaFit$residuals)
-
-#Shapiro-Wilk normality test. if P-val > 0.05 then normal data. Ho = Data is normal. P value <.05 - Data skewed
-shapiro.test(arimaFit$residuals)
-
-# Tentative Models : ARIMA(2,1,2); (0,1,5); (5,1,5), (5,1,0)
-========================
-
-arimaFit= auto.arima(mydata$Close,approximation=FALSE,stepwise = FALSE,max.p = 8,max.q = 8,d=1,trace = TRUE)
-
-                                                                               df       AIC
-arima(tsdata2, order = c(2, 1, 2), seasonal = list(order = c(0, 0, 0), period = 365))  5 -7399.991
-arima(tsdata2, order = c(0, 1, 5), seasonal = list(order = c(0, 0, 0), period = 365))  6 -7377.923
-arima(tsdata2, order = c(5, 1, 5), seasonal = list(order = c(0, 0, 0), period = 365)) 11 -7410.634
-arima(tsdata2, order = c(3, 1, 2), seasonal = list(order = c(0, 0, 0), period = 365))  6 -7382.073
-arima(tsdata2, order = c(5, 1, 0), seasonal = list(order = c(0, 0, 0), period = 365))  6 -7378.168
